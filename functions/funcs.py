@@ -1555,7 +1555,7 @@ def indexOfRefractionSiO2(wav):
         n,k = np.array(n),np.array(k)
     except TypeError:
         if (wav <wav_data[0]):
-            n = np.sqrt( 1 + (0.6961663*wvl**2 / (wvl**2 - 0.0684043**2)) + (0.4079426*wvl**2 / (wvl**2 - 0.1162414**2)) + (0.8974794*wvl**2 / (wvl**2 - 9.896161**2)))
+            n = np.sqrt( 1 + (0.6961663*wav**2 / (wav**2 - 0.0684043**2)) + (0.4079426*wav**2 / (wav**2 - 0.1162414**2)) + (0.8974794*wav**2 / (wav**2 - 9.896161**2)))
             k = 0
         else:
             n,k = interp_n(wav),interp_k(wav)
@@ -1584,6 +1584,104 @@ def SW_ARcoat_reflectance(workDir=None):
     # wav_data in micron
     # reflectance normalized to 1
     return wav_data,reflectance
+
+# transfer matrix method
+def simple_tmm(n_list,d_list,th_0,lambda_vacuum):
+    from scipy import arcsin
+    #------------------
+    num_layers = n_list.size
+    # th_list is a list with, for each layer, the angle that the light travels
+    # through the layer. Computed with Snell's law. Note that the "angles" may be
+    # complex!
+    th_list = arcsin(n_list[0]*np.sin(th_0) / n_list)
+    # kz is the z-component of (complex) angular wavevector for forward-moving
+    # wave. Positive imaginary part means decaying.
+    kz_list = 2 * np.pi * n_list * np.cos(th_list) / lambda_vacuum
+    # delta is the total phase accrued by traveling through a given layer.
+    # Ignore warning about inf multiplication
+    delta = kz_list * d_list
+    #------------------
+    # t_list[i,j] and r_list[i,j] are transmission and reflection amplitudes,
+    # respectively, coming from i, going to j. Only need to calculate this when
+    # j=i+1. (2D array is overkill but helps avoid confusion.)
+
+    # s-polarization
+    t_list_spol = np.zeros((num_layers, num_layers), dtype=complex)
+    r_list_spol = np.zeros((num_layers, num_layers), dtype=complex)
+    for i in range(num_layers-1):
+        t_list_spol[i,i+1] = 2 * n_list[i] * np.cos(th_list[i]) / (n_list[i] * np.cos(th_list[i]) + n_list[i+1] * np.cos(th_list[i+1]))
+        r_list_spol[i,i+1] = ((n_list[i] * np.cos(th_list[i]) - n_list[i+1] * np.cos(th_list[i+1])) / (n_list[i] * np.cos(th_list[i]) + n_list[i+1] * np.cos(th_list[i+1])))
+
+    # p-polarization
+    t_list_ppol = np.zeros((num_layers, num_layers), dtype=complex)
+    r_list_ppol = np.zeros((num_layers, num_layers), dtype=complex)
+    for i in range(num_layers-1):
+        t_list_ppol[i,i+1] = 2 * n_list[i] * np.cos(th_list[i]) / (n_list[i+1] * np.cos(th_list[i]) + n_list[i] * np.cos(th_list[i+1]))
+        r_list_ppol[i,i+1] = ((n_list[i+1] * np.cos(th_list[i]) - n_list[i] * np.cos(th_list[i+1])) / (n_list[i+1] * np.cos(th_list[i]) + n_list[i] * np.cos(th_list[i+1])))
+    #------------------
+    def make_2x2_array(a, b, c, d, dtype=float):
+        my_array = np.empty((2,2), dtype=dtype)
+        my_array[0,0] = a
+        my_array[0,1] = b
+        my_array[1,0] = c
+        my_array[1,1] = d
+        return my_array
+
+    # At the interface between the (n-1)st and nth material, let v_n be the
+    # amplitude of the wave on the nth side heading forwards (away from the
+    # boundary), and let w_n be the amplitude on the nth side heading backwards
+    # (towards the boundary). Then (v_n,w_n) = M_n (v_{n+1},w_{n+1}). M_n is
+    # M_list[n]. M_0 and M_{num_layers-1} are not defined.
+    # My M is a bit different than Sernelius's, but Mtilde is the same.
+    M_list_spol = np.zeros((num_layers, 2, 2), dtype=complex)
+    for i in range(1, num_layers-1):
+        M_list_spol[i] = (1/t_list_spol[i,i+1]) * np.dot(
+            make_2x2_array(np.exp(-1j*delta[i]), 0, 0, np.exp(1j*delta[i]),
+                           dtype=complex),
+            make_2x2_array(1, r_list_spol[i,i+1], r_list_spol[i,i+1], 1, dtype=complex))
+    Mtilde_spol = make_2x2_array(1, 0, 0, 1, dtype=complex)
+    for i in range(1, num_layers-1):
+        Mtilde_spol = np.dot(Mtilde_spol, M_list_spol[i])
+    Mtilde_spol = np.dot(make_2x2_array(1, r_list_spol[0,1], r_list_spol[0,1], 1,
+                                   dtype=complex)/t_list_spol[0,1], Mtilde_spol)
+
+    M_list_ppol = np.zeros((num_layers, 2, 2), dtype=complex)
+    for i in range(1, num_layers-1):
+        M_list_ppol[i] = (1/t_list_ppol[i,i+1]) * np.dot(
+            make_2x2_array(np.exp(-1j*delta[i]), 0, 0, np.exp(1j*delta[i]),
+                           dtype=complex),
+            make_2x2_array(1, r_list_ppol[i,i+1], r_list_ppol[i,i+1], 1, dtype=complex))
+    Mtilde_ppol = make_2x2_array(1, 0, 0, 1, dtype=complex)
+    for i in range(1, num_layers-1):
+        Mtilde_ppol = np.dot(Mtilde_ppol, M_list_ppol[i])
+    Mtilde_ppol = np.dot(make_2x2_array(1, r_list_ppol[0,1], r_list_ppol[0,1], 1,
+                                   dtype=complex)/t_list_ppol[0,1], Mtilde_ppol)
+    #------------------
+    # Net complex transmission and reflection amplitudes
+    r_spol = Mtilde_spol[1,0]/Mtilde_spol[0,0]
+    t_spol = 1/Mtilde_spol[0,0]
+
+    r_ppol = Mtilde_ppol[1,0]/Mtilde_ppol[0,0]
+    t_ppol = 1/Mtilde_ppol[0,0]
+    #------------------
+    # Net transmitted and reflected power, as a proportion of the incoming light
+    # power.
+    R_spol = abs(r_spol)**2
+    T_spol = abs(t_spol**2) * (((n_list[-1]*np.cos(th_list[-1])).real) / (n_list[0]*np.cos(th_0)).real)
+    power_entering_spol = ((n_list[0]*np.cos(th_0)*(1+np.conj(r_spol))*(1-r_spol)).real
+                         / (n_list[0]*np.cos(th_0)).real)
+
+    R_ppol = abs(r_ppol)**2
+    T_ppol = abs(t_ppol**2) * (((n_list[-1]*np.conj(np.cos(th_list[-1]))).real) / (n_list[0]*np.conj(np.cos(th_0))).real)
+    power_entering_ppol = ((n_list[0]*np.conj(np.cos(th_0))*(1+r_ppol)*(1-np.conj(r_ppol))).real
+                          / (n_list[0]*np.conj(np.cos(th_0))).real)
+    #------------------
+    # Calculates reflected and transmitted power for unpolarized light.
+    R = (R_spol + R_ppol) / 2.
+    T = (T_spol + T_ppol) / 2.
+    A = 1-R-T
+
+    return R,T,A
 
 # save and load objects
 def save_obj(obj,name,path='' ):
