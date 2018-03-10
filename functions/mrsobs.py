@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-
 File paths to mrs observations.
-
-:History:
-
-Created on Thu Mar 01 10:58:50 2018
-
-@author: Ioannis Argyriou (KUL, ioannis.argyriou@kuleuven.be)
+Author: Ioannis Argyriou (Institute of Astronomy, KU Leuven, ioannis.argyriou@kuleuven.be)
 """
+
 # some trivia
 allbands = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C']
 allchannels = ['1','2','3','4']

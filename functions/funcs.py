@@ -1,4 +1,6 @@
-"""Function file"""
+"""Function file
+Author: Ioannis Argyriou (Institute of Astronomy, KU Leuven, ioannis.argyriou@kuleuven.be)
+"""
 
 # import python modules
 import os
@@ -993,6 +995,101 @@ def norm_fringe(sci_data,thres=None,min_dist=None,k=3,ext=3):
 
     return sci_data_noNaN,peaks,sci_data_profile
 
+# def fringe_scanning(wvnr,sci_data,xpos,thres=0):
+#     # fringe peaks are found according to two parameters
+#     # 1) threshold
+#     # 2) minimum distance between subsequent peaks
+#     detsubstrfringe_wvnr_spacing = (1/0.1710)/2. # assuming the AR coating to pixel aluminization fringe is always the dominant source of fringing
+#     min_dist = 0
+#     while wvnr[len(wvnr)/2 - min_dist]-wvnr[len(wvnr)/2]<detsubstrfringe_wvnr_spacing :
+#         min_dist+=1
+#     min_dist = int(round(min_dist/1.6))
+#     print 'Min_dist between subsequent peaks: {} elements (pixels)'.format(min_dist)
+#
+#     # jumps/drops in signal due to displacement in pixel column
+#     discont_idxs = np.unique(np.sort(len(sci_data)-1-1-np.where((np.abs(np.diff(xpos))>=1))[0]))+1
+#     discont_idxs = np.concatenate([discont_idxs,np.array([len(sci_data)-1])])
+#
+#     # omit sections with too few elements
+#     bad_sections = []
+#     for i in range(len(discont_idxs)-1):
+#         if discont_idxs[i+1]-discont_idxs[i] <= min_dist:
+#             if discont_idxs[i+1] == -1:
+#                 sci_data[discont_idxs[i]:] = np.nan
+#                 bad_sections.extend([i,i+1])
+#             elif discont_idxs[i] == 0:
+#                 sci_data[:discont_idxs[i+1]] = np.nan
+#                 bad_sections.extend([i,i+1])
+#             else:
+#                 sci_data[discont_idxs[i]-1:discont_idxs[i+1]+1] = np.nan
+#                 bad_sections.extend([i,i+1])
+#     discont_idxs = np.delete(discont_idxs,bad_sections)
+#
+#     omit_nan = ~np.isnan(sci_data).copy()
+#     wvnr_noNaN = wvnr[omit_nan]
+#     sci_data_noNaN = sci_data[omit_nan]
+#
+#     # second iteration
+#     discont_idxs = np.unique(np.sort(len(sci_data_noNaN)-1-1-np.where((np.abs(np.diff(xpos[np.flipud(omit_nan)]))>=1))[0]))+1
+#     if discont_idxs[0] != 0:
+#         discont_idxs = np.concatenate((np.array([0]),discont_idxs))
+#     if discont_idxs[-1] != len(sci_data_noNaN)-1:
+#         discont_idxs = np.concatenate((discont_idxs,np.array([len(sci_data_noNaN)-1])))
+#
+#     outlier_condition = 5*np.std(np.abs(np.diff(sci_data_noNaN))) # five sigma
+#     outliers = np.where(np.abs(np.diff(sci_data_noNaN)) > outlier_condition)[0]
+#     invalid_outlier_idxs = [i for i in range(len(outliers)) if outliers[i] in discont_idxs-1]
+#     outliers = np.delete(outliers,invalid_outlier_idxs)
+#
+#     test_case = find_peaks(np.abs(np.diff(sci_data_noNaN)),thres=outlier_condition/np.max(np.abs(np.diff(sci_data_noNaN))),min_dist=min_dist)
+#     invalid_testcase_idxs = [i for i in range(len(test_case)) if test_case[i] in outliers]
+#     test_case = np.delete(test_case,invalid_testcase_idxs)
+#     if (len(test_case) != 0) & (set(test_case).issubset(discont_idxs[(discont_idxs!=0)]-1)) & (alpha_position < 0):
+#         case = '1'
+#     elif (len(test_case) != 0) & (set(test_case).issubset(discont_idxs[(discont_idxs!=0)]-1)) & (alpha_position > 0):
+#         case = '2'
+#     else:
+#         case = '3'
+#     print 'Case {}'.format(case)
+#
+#     if case in ['1','2']:
+#         peaks_idxs = []
+#         pseudo_wvnr = []
+#         pseudo_contin = []
+#         for i in range(len(discont_idxs)-1):
+#             idx1,idx2 = discont_idxs[i],discont_idxs[i+1]
+#             pseudo_continuum = ((sci_data_noNaN[idx2-1]-sci_data_noNaN[idx1])/(wvnr_noNaN[idx2-1]-wvnr_noNaN[idx1]))*(np.linspace(wvnr_noNaN[idx1],wvnr_noNaN[idx2],idx2-idx1)-wvnr_noNaN[idx1])+sci_data_noNaN[idx1]
+#             # could try a 4th order polynomial for the pseudo_continuum, but too time consuming?..
+#             peak_idxs = idx1+funcs.find_peaks(sci_data_noNaN[idx1:idx2]-pseudo_continuum,thres=thres,min_dist=min_dist)
+#             invalid_peaks = [j for j in range(len(peak_idxs)) if peak_idxs[j] in outliers+1]
+#             peak_idxs = np.delete(peak_idxs,invalid_peaks)
+#             peaks_idxs.extend(peak_idxs)
+#             pseudo_wvnr.extend(wvnr_noNaN[idx1:idx2])
+#             pseudo_contin.extend(pseudo_continuum)
+#     elif case == '3':
+#         peaks_idxs = funcs.find_peaks(sci_data_noNaN,thres=thres,min_dist=min_dist)
+
+def cleanRD(R,D):
+    # take care of numerical instabilities
+    cleanR = R.copy()
+    cleanD = D.copy()
+    numerics = [] # list of indexes were "cleaning" required
+
+    # reflectivity
+    #--have not found exceptions yet
+
+    # optical thickness
+    diffD = np.diff(cleanD)
+    offset = np.mean(np.abs(diffD)[np.where(np.abs(diffD)*10000.>1)[0]])
+    while len(np.where(np.abs(diffD)*10000.>1)[0] != 0):
+        clean_idx_pos = np.where(diffD*10000.>1)[0]
+        numerics.extend(clean_idx_pos+1)
+        cleanD[clean_idx_pos+1] -= offset
+        diffD = np.diff(cleanD)
+
+    numerics = np.sort(np.unique(np.array(numerics)))
+    return cleanR,cleanD,numerics
+
 # find
 def find_nearest(array,value):
     return np.abs(array-value).argmin()
@@ -1474,6 +1571,19 @@ def ALrefract_index(dosage):
     ALrefract_index_interpolator = scp_interpolate.InterpolatedUnivariateSpline(Implanted_dosage,ALrefract_index,k=2,ext=0)
     ALextinct_coeff_interpolator = scp_interpolate.InterpolatedUnivariateSpline(Implanted_dosage,ALextinct_coeff,k=2,ext=0)
     return ALrefract_index_interpolator(dosage) + ALextinct_coeff_interpolator(dosage)*1j
+
+def buriedelectrode_transmission(workDir=None):
+    wav_data,transmission = np.genfromtxt(workDir+'transp_contact_transm_5e14implant_poly.txt',skip_header=3,usecols=(0,1),delimiter='',unpack=True)
+    transmission /= 100.
+    # wav_data in micron
+    # transmission normalized to 1
+    return wav_data,transmission
+
+def SW_ARcoat_reflectance(workDir=None):
+    wav_data,reflectance = np.genfromtxt(workDir+'SW_ARcoat_reflectance.txt',skip_header=4,usecols=(0,1),delimiter=',',unpack=True)
+    # wav_data in micron
+    # reflectance normalized to 1
+    return wav_data,reflectance
 
 # save and load objects
 def save_obj(obj,name,path='' ):
