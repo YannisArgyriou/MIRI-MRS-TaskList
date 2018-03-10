@@ -11784,21 +11784,71 @@ div#notebook {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Import-modules">&gt; Import modules<a class="anchor-link" href="#&gt;-Import-modules">&#182;</a></h2>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+
+<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;&lt;script&gt;</span>
+<span class="s1">code_show=true; </span>
+<span class="s1">function code_toggle() {</span>
+<span class="s1"> if (code_show){</span>
+<span class="s1"> $(&#39;div.input&#39;).hide();</span>
+<span class="s1"> } else {</span>
+<span class="s1"> $(&#39;div.input&#39;).show();</span>
+<span class="s1"> }</span>
+<span class="s1"> code_show = !code_show</span>
+<span class="s1">} </span>
+<span class="s1">$( document ).ready(code_toggle);</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">The raw code for this IPython notebook is by default hidden for easier reading.</span>
+<span class="s1">To toggle on/off the raw code, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+
 </div>
 </div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<script>
+code_show=true; 
+function code_toggle() {
+ if (code_show){
+ $('div.input').hide();
+ } else {
+ $('div.input').show();
+ }
+ code_show = !code_show
+} 
+$( document ).ready(code_toggle);
+</script>
+The raw code for this IPython notebook is by default hidden for easier reading.
+To toggle on/off the raw code, click <a href="javascript:code_toggle()">here</a>.
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">funcs</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># import modules</span>
+<span class="kn">import</span> <span class="nn">funcs</span>
 <span class="kn">import</span> <span class="nn">mrsobs</span>
 
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
@@ -11816,7 +11866,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Get-data">&gt; Get data<a class="anchor-link" href="#&gt;-Get-data">&#182;</a></h2><p>We load the images for one band of the MRS for different kinds of sources, including:</p>
+<p>We load the images for one band of the MRS for different kinds of sources, including:</p>
 <ul>
 <li>MTS 800K BB extended source</li>
 <li>MIRI 800K BB internal calibration source</li>
@@ -11861,7 +11911,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Transform-data">&gt; Transform data<a class="anchor-link" href="#&gt;-Transform-data">&#182;</a></h2><p>We subtract background exposures where available (Contamination Control Cover closed for internal calibration source observations, no background exposures taken)</p>
+<p>We subtract background exposures where available (Contamination Control Cover closed for internal calibration source observations, no background exposures taken).</p>
 
 </div>
 </div>
@@ -11886,7 +11936,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Modeling">&gt; Modeling<a class="anchor-link" href="#&gt;-Modeling">&#182;</a></h2><h3 id="Test-1:-We-extract-a-detector-pixel-trace-in-each-projected-slice-on-the-detector,-at-an-along-slice-position-of-0.-arcseconds.-We-seek-to-compare-the-spectra-extracted-from-different-locations-on-the-detector-using-the-wavelength-calibration-information-as-common-basis-for-the-measurements.">Test 1: We extract a detector pixel trace in each projected slice on the detector, at an along-slice position of 0. arcseconds. We seek to compare the spectra extracted from different locations on the detector using the wavelength calibration information as common basis for the measurements.<a class="anchor-link" href="#Test-1:-We-extract-a-detector-pixel-trace-in-each-projected-slice-on-the-detector,-at-an-along-slice-position-of-0.-arcseconds.-We-seek-to-compare-the-spectra-extracted-from-different-locations-on-the-detector-using-the-wavelength-calibration-information-as-common-basis-for-the-measurements.">&#182;</a></h3>
+<h3 id="Test-1:-We-extract-a-detector-pixel-trace-in-each-projected-slice-on-the-detector,-at-an-along-slice-position-of-0.-arcseconds.-We-seek-to-compare-the-spectra-extracted-from-different-locations-on-the-detector-using-the-wavelength-calibration-information-as-common-basis-for-the-measurements.">Test 1: We extract a detector pixel trace in each projected slice on the detector, at an along-slice position of 0. arcseconds. We seek to compare the spectra extracted from different locations on the detector using the wavelength calibration information as common basis for the measurements.<a class="anchor-link" href="#Test-1:-We-extract-a-detector-pixel-trace-in-each-projected-slice-on-the-detector,-at-an-along-slice-position-of-0.-arcseconds.-We-seek-to-compare-the-spectra-extracted-from-different-locations-on-the-detector-using-the-wavelength-calibration-information-as-common-basis-for-the-measurements.">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -11947,10 +11997,10 @@ div#notebook {
 
 
 
-<div id="73fc667e-5cfb-41a8-92d0-2ac89bc308c5"></div>
+<div id="4ff54247-c140-4aeb-a4b3-e8fb3626cf7d"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#73fc667e-5cfb-41a8-92d0-2ac89bc308c5');
+var element = $('#4ff54247-c140-4aeb-a4b3-e8fb3626cf7d');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -12787,10 +12837,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="ac5759ac-061d-4232-8511-f0fd02431cfa"></div>
+<div id="9784b638-6ccf-41de-9319-9682420c4852"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#ac5759ac-061d-4232-8511-f0fd02431cfa');
+var element = $('#9784b638-6ccf-41de-9319-9682420c4852');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -13621,10 +13671,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="41299199-aa57-49d8-a109-c595a85c7e06"></div>
+<div id="4c03ee6d-9d20-4d92-9b46-2bd358f1ae0a"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#41299199-aa57-49d8-a109-c595a85c7e06');
+var element = $('#4c03ee6d-9d20-4d92-9b46-2bd358f1ae0a');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -14500,10 +14550,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="f9146664-c3ef-4cee-a243-cf00b383716f"></div>
+<div id="a0a88ba1-1bc6-4c49-a3b0-19ff16c6a052"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#f9146664-c3ef-4cee-a243-cf00b383716f');
+var element = $('#a0a88ba1-1bc6-4c49-a3b0-19ff16c6a052');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 

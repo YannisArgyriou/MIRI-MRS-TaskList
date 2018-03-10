@@ -11783,21 +11783,71 @@ div#notebook {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Import-modules">&gt; Import modules<a class="anchor-link" href="#&gt;-Import-modules">&#182;</a></h2>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">funcs</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+
+<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;&lt;script&gt;</span>
+<span class="s1">code_show=true; </span>
+<span class="s1">function code_toggle() {</span>
+<span class="s1"> if (code_show){</span>
+<span class="s1"> $(&#39;div.input&#39;).hide();</span>
+<span class="s1"> } else {</span>
+<span class="s1"> $(&#39;div.input&#39;).show();</span>
+<span class="s1"> }</span>
+<span class="s1"> code_show = !code_show</span>
+<span class="s1">} </span>
+<span class="s1">$( document ).ready(code_toggle);</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">The raw code for this IPython notebook is by default hidden for easier reading.</span>
+<span class="s1">To toggle on/off the raw code, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<script>
+code_show=true; 
+function code_toggle() {
+ if (code_show){
+ $('div.input').hide();
+ } else {
+ $('div.input').show();
+ }
+ code_show = !code_show
+} 
+$( document ).ready(code_toggle);
+</script>
+The raw code for this IPython notebook is by default hidden for easier reading.
+To toggle on/off the raw code, click <a href="javascript:code_toggle()">here</a>.
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># import modules</span>
+<span class="kn">import</span> <span class="nn">funcs</span>
 <span class="kn">import</span> <span class="nn">mrsobs</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span><span class="n">flipud</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">diff</span><span class="p">,</span><span class="n">array</span><span class="p">,</span><span class="n">linspace</span><span class="p">,</span><span class="n">pi</span><span class="p">)</span>
@@ -11819,7 +11869,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Get-data">&gt; Get data<a class="anchor-link" href="#&gt;-Get-data">&#182;</a></h2><p>We load the images for one band of the MRS:</p>
+<p>We load the images for one band of the MRS:</p>
 <ul>
 <li>MTS 800K BB extended source observed through etalon "ET1A"</li>
 </ul>
@@ -11860,7 +11910,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Transform-data">&gt; Transform data<a class="anchor-link" href="#&gt;-Transform-data">&#182;</a></h2><p>We subtract background exposures where available</p>
+<p>We subtract background exposures where available.</p>
 
 </div>
 </div>
@@ -11884,7 +11934,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We perform an even-odd row signal correction to the data (caused by the read-out pattern of MIRI detector pixel rows)</p>
+<p>We perform an even-odd row signal correction to the data (caused by the read-out pattern of MIRI detector pixel rows).</p>
 
 </div>
 </div>
@@ -11907,7 +11957,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&gt;-Modeling">&gt; Modeling<a class="anchor-link" href="#&gt;-Modeling">&#182;</a></h2><p>What happens when a blackbody spectrum is observed through a Fabry-Pérot resonator (a.k.a. an etalon)? The observation of the MTS extended source seen through etalon ET1A shows an example of what happens. Where there is constructive interference one sees peaks in the spectrum. Where there is destructive interference one sees noise. Important to take note:</p>
+<p>What happens when a blackbody spectrum is observed through a Fabry-Pérot resonator (a.k.a. an etalon)? The observation of the MTS extended source seen through etalon ET1A shows an example of what happens. Where there is constructive interference one sees peaks in the spectrum. Where there is destructive interference one sees noise. Important to take note:</p>
 <ul>
 <li>The spacing of the peaks depends on the geometric and optical properties of the etalon</li>
 <li>Etalons can be modeled using a Fabry-Pérot transmittance function that depends on broad design parameters such as the reflectivity of the etalon and optical thickness (refractive index of constituent material multiplied by geometric thickness). Mathematically:
@@ -11996,10 +12046,10 @@ where $\sigma$ stands for wavenumber, $\theta$ is the light incidence angle, and
 
 
 
-<div id="9ad3938c-6cee-4c2d-8d2b-af355897ff9c"></div>
+<div id="d759912b-2431-4e0d-b7ba-643483030fb7"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#9ad3938c-6cee-4c2d-8d2b-af355897ff9c');
+var element = $('#d759912b-2431-4e0d-b7ba-643483030fb7');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -12788,10 +12838,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="ddd2cebb-ac4c-4e23-ac3e-43d66e91995c"></div>
+<div id="b46b8e0c-6df9-4646-9ab0-2298a18a644a"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#ddd2cebb-ac4c-4e23-ac3e-43d66e91995c');
+var element = $('#b46b8e0c-6df9-4646-9ab0-2298a18a644a');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -13676,10 +13726,10 @@ The optical thickness D of the etalon is related to Δσ as: D = 1/(2Δσ) = 157
 
 
 
-<div id="4b8001e6-04e8-4373-a66f-222226d1a5b2"></div>
+<div id="2b591196-9538-458c-887a-dbbb9089445f"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#4b8001e6-04e8-4373-a66f-222226d1a5b2');
+var element = $('#2b591196-9538-458c-887a-dbbb9089445f');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -14565,10 +14615,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="72c0140a-f5da-481a-8c2e-83fdd025aaf3"></div>
+<div id="289dd5cb-f248-45e7-a47a-f6ee29a114eb"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#72c0140a-f5da-481a-8c2e-83fdd025aaf3');
+var element = $('#289dd5cb-f248-45e7-a47a-f6ee29a114eb');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -15430,10 +15480,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="7404bfc3-3c6c-4d45-b00e-9cf9a013ac5f"></div>
+<div id="4b42ced3-1c67-41db-b31e-db2706bc6496"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#7404bfc3-3c6c-4d45-b00e-9cf9a013ac5f');
+var element = $('#4b42ced3-1c67-41db-b31e-db2706bc6496');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -16303,10 +16353,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="90275140-1847-4e2c-8dfc-25031a7ee44b"></div>
+<div id="01d1a536-5000-4417-9650-8095f794ddbe"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#90275140-1847-4e2c-8dfc-25031a7ee44b');
+var element = $('#01d1a536-5000-4417-9650-8095f794ddbe');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -17095,10 +17145,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="09bda384-30aa-4346-81b1-36a0a5eaa2b2"></div>
+<div id="42db7806-ebef-45d7-abd4-4d0c8fd049da"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#09bda384-30aa-4346-81b1-36a0a5eaa2b2');
+var element = $('#42db7806-ebef-45d7-abd4-4d0c8fd049da');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -17963,10 +18013,10 @@ The beating fringe is produced by an etalon with an optical thickness: D = 1578.
 
 
 
-<div id="84417a9d-5457-410c-85b2-2eea6e4b03aa"></div>
+<div id="dfcfdfcd-d6ba-4e11-8875-0950c637518d"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#84417a9d-5457-410c-85b2-2eea6e4b03aa');
+var element = $('#dfcfdfcd-d6ba-4e11-8875-0950c637518d');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
@@ -18849,10 +18899,10 @@ if (IPython.notebook.kernel != null) {
 
 
 
-<div id="4108cc31-8320-4340-9b66-98256ea05289"></div>
+<div id="25b2188e-74d4-4232-a97e-2042c3e23cf7"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#4108cc31-8320-4340-9b66-98256ea05289');
+var element = $('#25b2188e-74d4-4232-a97e-2042c3e23cf7');
 /* Put everything inside the global mpl namespace */
 window.mpl = {};
 
