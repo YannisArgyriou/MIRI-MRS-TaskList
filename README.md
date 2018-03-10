@@ -11,5 +11,5 @@ List of notebooks:
 6 - Fringes - point source versus extended source  
 7 - Deriving detector optical properties from MIRI fringes  
 8 - Scanning the MIRI SW detector  
-9 - Modeling the MIRI detectors 
+9 - Modeling the MIRI detectors   
 10 - [Under Construction] The internal calibration source fringes 
