@@ -1,5 +1,5 @@
 # MIRI_FringeAdventures
-Series of python notebooks summarizing the different aspects of MIRI detector interference in a somewhat ordered fashion. As always feedback is appreciated, thank you!  
+Series of python notebooks summarizing the different aspects of MIRI detector interference in a somewhat ordered fashion. Feedback is appreciated, thank you!  
   
 List of notebooks:  
 0 - Fringes everywhere  
