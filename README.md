@@ -12,4 +12,5 @@ List of notebooks:
 7 - Deriving detector optical properties from MIRI fringes  
 8 - Scanning the MIRI SW detector  
 9 - Modeling the MIRI detectors   
-10 - [Under Construction] The internal calibration source fringes 
+10 - The internal calibration source
+11 - [Under Construction] Detector partial coherence
