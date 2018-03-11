@@ -12,6 +12,6 @@ List of notebooks:
 7 - Deriving detector optical properties from MIRI fringes  
 8 - Scanning the MIRI SW detector  
 9 - Modeling the MIRI detectors   
-10 - The internal calibration source
+10 - The internal calibration source  
 11 - 800K vs 600K vs 400K extended  
 12 - [Under Construction] Detector partial coherence
