@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-File paths to mrs observations.
-Author: Ioannis Argyriou (Institute of Astronomy, KU Leuven, ioannis.argyriou@kuleuven.be)
-"""
 
+File paths to mrs observations.
+
+:History:
+
+Created on Thu Mar 01 10:58:50 2018
+
+@author: Ioannis Argyriou (KUL, ioannis.argyriou@kuleuven.be)
+"""
 # some trivia
 allbands = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C']
 allchannels = ['1','2','3','4']
@@ -96,7 +101,7 @@ def FM_MTS_BB_extended_source(lvl2path,band,bb_temp=None,output='img'):
         return sci_imgs[band],bkg_imgs[band]
     elif output == 'img':
         from astropy.io import fits
-        return fits.open(sci_imgs[band])[0].data[0,:,:],fits.open(bkg_imgs[band])[0].data[0,:,:]
+        return fits.open(sci_imgs[band])[0].data[0,:,:], fits.open(bkg_imgs[band])[0].data[0,:,:]
 
 def MIRI_internal_calibration_source(lvl2path,band,campaign=None,output='img'):
     """
@@ -135,6 +140,19 @@ def MIRI_internal_calibration_source(lvl2path,band,campaign=None,output='img'):
                     "1B":lvl2path +'',
                     "1C":lvl2path +'',
                     "2A":lvl2path +'MIRM33541-A-A-8MA-6019093539_1_495_SE_2016-01-19T09h59m18_LVL2.fits',
+                    "2B":lvl2path +'',
+                    "2C":lvl2path +'',
+                    "3A":lvl2path +'',
+                    "3B":lvl2path +'',
+                    "3C":lvl2path +'',
+                    "4A":lvl2path +'',
+                    "4B":lvl2path +'',
+                    "4C":lvl2path +''}
+    elif campaign == 'CV1':
+        sci_imgs = {"1A":lvl2path +'MIRM33512-A-A-8MA-3291020639_1_495_SE_2013-10-18T02h38m56_LVL2.fits',
+                    "1B":lvl2path +'',
+                    "1C":lvl2path +'',
+                    "2A":lvl2path +'MIRM33512-A-A-8MA-3291020639_1_495_SE_2013-10-18T02h38m56_LVL2.fits',
                     "2B":lvl2path +'',
                     "2C":lvl2path +'',
                     "3A":lvl2path +'',
@@ -391,10 +409,109 @@ def RAL_FTS_ET_observations(obsDir,etalon=None):
             for row in spamreader:
                 wvnrs.append(np.float(row[0]) )
                 etalon_data.append(np.float(row[1]) )
-        wvnrs,etalon_data = np.array(wvnrs),np.array(etalon)
+        wvnrs,etalon_data = np.array(wvnrs),np.array(etalon_data)
     return wvnrs,etalon_data
 
-def FM_MTS_800K_BB_point_source_raster(lvl2path,position=None,pointing='all',output='img'):
+def FM_MTS_800K_BB_MRS_OPT_01_raster(lvl2path,pointing='all',output='img'):
+    """
+    * all pointings are in DGA setup 1A/2A
+    """
+    sci_imgs = {'P1':lvl2path+'FM1T00011465/MIRFM1T00011465_1_495_SE_2011-06-04T17h58m38_LVL2.fits',
+                'P2':lvl2path+'FM1T00011465/MIRFM1T00011465_2_495_SE_2011-06-04T18h03m33_LVL2.fits',
+                'P3':lvl2path+'FM1T00011465/MIRFM1T00011465_3_495_SE_2011-06-04T18h08m33_LVL2.fits',
+                'P4':lvl2path+'FM1T00011465/MIRFM1T00011465_4_495_SE_2011-06-04T18h13m28_LVL2.fits',
+                'P5':lvl2path+'FM1T00011465/MIRFM1T00011465_5_495_SE_2011-06-04T18h18m28_LVL2.fits',
+                'P6':lvl2path+'FM1T00011465/MIRFM1T00011465_6_495_SE_2011-06-04T18h23m29_LVL2.fits',
+                'P7':lvl2path+'FM1T00011465/MIRFM1T00011465_7_495_SE_2011-06-04T18h28m29_LVL2.fits',
+                'P8':lvl2path+'FM1T00011465/MIRFM1T00011465_8_495_SE_2011-06-04T18h33m24_LVL2.fits',
+                'P9':lvl2path+'FM1T00011465/MIRFM1T00011465_9_495_SE_2011-06-04T18h38m24_LVL2.fits',
+                'P10':lvl2path+'FM1T00011465/MIRFM1T00011465_10_495_SE_2011-06-04T18h43m19_LVL2.fits',
+                'P11':lvl2path+'FM1T00011465/MIRFM1T00011465_11_495_SE_2011-06-04T18h48m19_LVL2.fits',
+                'P12':lvl2path+'FM1T00011465/MIRFM1T00011465_12_495_SE_2011-06-04T18h53m14_LVL2.fits',
+                'P13':lvl2path+'FM1T00011465/MIRFM1T00011465_13_495_SE_2011-06-04T18h58m14_LVL2.fits',
+                'P14':lvl2path+'FM1T00011465/MIRFM1T00011465_14_495_SE_2011-06-04T19h03m15_LVL2.fits',
+                'P15':lvl2path+'FM1T00011465/MIRFM1T00011465_15_495_SE_2011-06-04T19h08m10_LVL2.fits',
+                'P16':lvl2path+'FM1T00011465/MIRFM1T00011465_16_495_SE_2011-06-04T19h13m10_LVL2.fits',
+                'P17':lvl2path+'FM1T00011465/MIRFM1T00011465_17_495_SE_2011-06-04T19h18m05_LVL2.fits',
+                'P18':lvl2path+'FM1T00011465/MIRFM1T00011465_18_495_SE_2011-06-04T19h23m05_LVL2.fits',
+                'P19':lvl2path+'FM1T00011465/MIRFM1T00011465_19_495_SE_2011-06-04T19h28m05_LVL2.fits',
+                'P20':lvl2path+'FM1T00011465/MIRFM1T00011465_20_495_SE_2011-06-04T19h33m05_LVL2.fits',
+                'P21':lvl2path+'FM1T00011465/MIRFM1T00011465_21_495_SE_2011-06-04T19h38m01_LVL2.fits',
+                'P22':lvl2path+'FM1T00011465/MIRFM1T00011465_22_495_SE_2011-06-04T19h43m01_LVL2.fits',
+                'P23':lvl2path+'FM1T00011465/MIRFM1T00011465_23_495_SE_2011-06-04T19h47m56_LVL2.fits',
+                'P24':lvl2path+'FM1T00011465/MIRFM1T00011465_24_495_SE_2011-06-04T19h52m56_LVL2.fits',
+                'P25':lvl2path+'FM1T00011465/MIRFM1T00011465_25_495_SE_2011-06-04T19h57m51_LVL2.fits',
+                'P26':lvl2path+'FM1T00011465/MIRFM1T00011465_26_495_SE_2011-06-04T20h02m51_LVL2.fits',
+                'P27':lvl2path+'FM1T00011465/MIRFM1T00011465_27_495_SE_2011-06-04T20h07m46_LVL2.fits',
+                'P28':lvl2path+'FM1T00011465/MIRFM1T00011465_28_495_SE_2011-06-04T20h12m47_LVL2.fits',
+                'P29':lvl2path+'FM1T00011465/MIRFM1T00011465_29_495_SE_2011-06-04T20h17m42_LVL2.fits',
+                'P30':lvl2path+'FM1T00011465/MIRFM1T00011465_30_495_SE_2011-06-04T20h22m42_LVL2.fits',
+                'P31':lvl2path+'FM1T00011465/MIRFM1T00011465_31_495_SE_2011-06-04T20h27m42_LVL2.fits',
+                'P32':lvl2path+'FM1T00011465/MIRFM1T00011465_32_495_SE_2011-06-04T20h32m42_LVL2.fits',
+                'P33':lvl2path+'FM1T00011465/MIRFM1T00011465_33_495_SE_2011-06-04T20h37m37_LVL2.fits',
+                'P34':lvl2path+'FM1T00011465/MIRFM1T00011465_34_495_SE_2011-06-04T20h42m37_LVL2.fits',
+                'P35':lvl2path+'FM1T00011465/MIRFM1T00011465_35_495_SE_2011-06-04T20h47m32_LVL2.fits',
+                'P36':lvl2path+'FM1T00011465/MIRFM1T00011465_36_495_SE_2011-06-04T20h52m33_LVL2.fits',
+                'P37':lvl2path+'FM1T00011465/MIRFM1T00011465_37_495_SE_2011-06-04T20h57m33_LVL2.fits',
+                'P38':lvl2path+'FM1T00011465/MIRFM1T00011465_38_495_SE_2011-06-04T21h02m28_LVL2.fits',
+                'P39':lvl2path+'FM1T00011465/MIRFM1T00011465_39_495_SE_2011-06-04T21h07m28_LVL2.fits',
+                'P40':lvl2path+'FM1T00011465/MIRFM1T00011465_40_495_SE_2011-06-04T21h12m23_LVL2.fits',
+                'P41':lvl2path+'FM1T00011465/MIRFM1T00011465_41_495_SE_2011-06-04T21h17m23_LVL2.fits',
+                'P42':lvl2path+'FM1T00011465/MIRFM1T00011465_42_495_SE_2011-06-04T21h22m23_LVL2.fits',
+                'P43':lvl2path+'FM1T00011465/MIRFM1T00011465_43_495_SE_2011-06-04T21h27m19_LVL2.fits',
+                'P44':lvl2path+'FM1T00011465/MIRFM1T00011465_44_495_SE_2011-06-04T21h32m19_LVL2.fits',
+                'P45':lvl2path+'FM1T00011465/MIRFM1T00011465_45_495_SE_2011-06-04T21h37m14_LVL2.fits',
+                'P46':lvl2path+'FM1T00011465/MIRFM1T00011465_46_495_SE_2011-06-04T21h42m14_LVL2.fits',
+                'P47':lvl2path+'FM1T00011465/MIRFM1T00011465_47_495_SE_2011-06-04T21h47m14_LVL2.fits',
+                'P48':lvl2path+'FM1T00011465/MIRFM1T00011465_48_495_SE_2011-06-04T21h52m09_LVL2.fits',
+                'P49':lvl2path+'FM1T00011465/MIRFM1T00011465_49_495_SE_2011-06-04T21h57m09_LVL2.fits',
+                'P50':lvl2path+'FM1T00011465/MIRFM1T00011465_50_495_SE_2011-06-04T22h02m05_LVL2.fits',
+                'P51':lvl2path+'FM1T00011465/MIRFM1T00011465_51_495_SE_2011-06-04T22h07m05_LVL2.fits',
+                'P52':lvl2path+'FM1T00011465/MIRFM1T00011465_52_495_SE_2011-06-04T22h12m00_LVL2.fits',
+                'P53':lvl2path+'FM1T00011465/MIRFM1T00011465_53_495_SE_2011-06-04T22h17m00_LVL2.fits',
+                'P54':lvl2path+'FM1T00011465/MIRFM1T00011465_54_495_SE_2011-06-04T22h22m00_LVL2.fits',
+                'P55':lvl2path+'FM1T00011465/MIRFM1T00011465_55_495_SE_2011-06-04T22h27m00_LVL2.fits',
+                'P56':lvl2path+'FM1T00011465/MIRFM1T00011465_56_495_SE_2011-06-04T22h31m55_LVL2.fits',
+                'P57':lvl2path+'FM1T00011465/MIRFM1T00011465_57_495_SE_2011-06-04T22h36m55_LVL2.fits',
+                'P58':lvl2path+'FM1T00011465/MIRFM1T00011465_58_495_SE_2011-06-04T22h41m51_LVL2.fits',
+                'P59':lvl2path+'FM1T00011465/MIRFM1T00011465_59_495_SE_2011-06-04T22h46m51_LVL2.fits',
+                'P60':lvl2path+'FM1T00011465/MIRFM1T00011465_60_495_SE_2011-06-04T22h51m51_LVL2.fits',
+                'P61':lvl2path+'FM1T00011465/MIRFM1T00011465_61_495_SE_2011-06-04T22h56m46_LVL2.fits',
+                'P62':lvl2path+'FM1T00011465/MIRFM1T00011465_62_495_SE_2011-06-04T23h01m46_LVL2.fits',
+                'P63':lvl2path+'FM1T00011465/MIRFM1T00011465_63_495_SE_2011-06-04T23h06m42_LVL2.fits'}
+    bkg_file = lvl2path+'FM1T00011464/MIRFM1T00011464_1_495_SE_2011-06-04T17h51m23_LVL2.fits'
+    if pointing == 'all':
+        return sci_imgs,bkg_file
+    elif (pointing != 'all') & (output=='img'):
+        from astropy.io import fits
+        return fits.open(sci_imgs[pointing])[0].data[0,:,:],fits.open(bkg_file)[0].data[0,:,:]
+
+def FM_MTS_800K_BB_MRS_OPT_02_obs(lvl2path,pointing='all',output='img'):
+    """
+    * all pointings are in DGA setup 1A/2A
+    """
+    sci_imgs = {'P1':lvl2path+'FM1T00011485/MIRFM1T00011485_1_495_SE_2011-06-07T03h12m04_LVL2.fits',
+                'P2':lvl2path+'FM1T00011485/MIRFM1T00011485_2_495_SE_2011-06-07T04h11m16_LVL2.fits',
+                'P3':lvl2path+'FM1T00011485/MIRFM1T00011485_3_495_SE_2011-06-07T05h10m22_LVL2.fits',
+                'P4':lvl2path+'FM1T00011485/MIRFM1T00011485_4_495_SE_2011-06-07T06h10m14_LVL2.fits',
+                'P5':lvl2path+'FM1T00012172/MIRFM1T00012172_1_495_SE_2011-06-26T11h52m55_LVL2.fits',
+                'P6':lvl2path+'FM1T00012172/MIRFM1T00012172_2_495_SE_2011-06-26T12h52m12_LVL2.fits',
+                'P7':lvl2path+'FM1T00012172/MIRFM1T00012172_3_495_SE_2011-06-26T13h51m19_LVL2.fits',
+                'P8':lvl2path+'FM1T00012172/MIRFM1T00012172_4_495_SE_2011-06-26T14h50m31_LVL2.fits',
+                'P9':lvl2path+'FM1T00012173/MIRFM1T00012173_1_495_SE_2011-06-26T16h20m52_LVL2.fits',
+                'P10':lvl2path+'FM1T00012173/MIRFM1T00012173_2_495_SE_2011-06-26T17h19m59_LVL2.fits',
+                'P11':lvl2path+'FM1T00012173/MIRFM1T00012173_3_495_SE_2011-06-26T18h19m15_LVL2.fits',
+                'P12':lvl2path+'FM1T00012173/MIRFM1T00012173_4_495_SE_2011-06-26T19h18m27_LVL2.fits'}
+    bkg_imgs = {}
+    for p in ['P1','P2','P3','P4']:bkg_imgs[p] = lvl2path+'FM1T00011482/MIRFM1T00011482_1_495_SE_2011-06-06T21h59m56_LVL2.fits'
+    for p in ['P5','P6','P7','P8','P9','P10','P11','P12']:bkg_imgs[p] = lvl2path+'FM1T00012171/MIRFM1T00012171_1_495_SE_2011-06-26T10h49m18_LVL2.fits'
+    if pointing == 'all':
+        return sci_imgs,bkg_imgs
+    elif (pointing != 'all') & (output=='img'):
+        from astropy.io import fits
+        return fits.open(sci_imgs[pointing])[0].data[0,:,:],fits.open(bkg_imgs[pointing])[0].data[0,:,:]
+
+def FM_MTS_800K_BB_MRS_OPT_06_raster(lvl2path,position=None,pointing='all',output='img'):
     """
     * all pointings are in DGA setup 1A/2A
     """
@@ -488,9 +605,9 @@ def FM_MTS_800K_BB_point_source_raster(lvl2path,position=None,pointing='all',out
         from astropy.io import fits
         return fits.open(sci_imgs[pointing])[0].data[0,:,:],fits.open(bkg_file)[0].data[0,:,:]
 
-#-- CV2 & CV3 data
-def CV_800K_BB_point_source_raster(dataDir,campaign=None):
-    """ load MIRIM PSFs"""
+#-- CV1RR & CV2 & CV3 data
+def CV_800K_BB_MRS_OPT_02_obs(dataDir,campaign=None,pointing='all',output='img'):
+    """ load MIRIM PSFs band 1A/2A"""
     import os
     import glob
 
@@ -499,32 +616,61 @@ def CV_800K_BB_point_source_raster(dataDir,campaign=None):
     MIRIMPSF_dictionary = {}
     if campaign == 'CV2':
         pointings = ['P'+str(i) for i in range(17)]
-        for pointing in pointings:
+        for point in pointings:
             mylist = []
             for subchannel in subchannels:
-                sub = 'MIRM0363-{}-{}'.format(pointing,subchannel)
+                sub = 'MIRM0363-{}-{}'.format(point,subchannel)
                 mylist.extend([s for s in files if sub in s])
-            MIRIMPSF_dictionary[campaign+'_'+pointing] = list(mylist)
-
-    if campaign == 'CV3':
+            MIRIMPSF_dictionary[campaign+'_'+point] = list(mylist)
+        if pointing == 'all':
+            return MIRIMPSF_dictionary
+        elif (pointing != 'all') & (output=='img'):
+            from astropy.io import fits
+            return fits.open(dataDir+MIRIMPSF_dictionary[campaign+'_'+pointing][1])[0].data[0,:,:],fits.open(dataDir+MIRIMPSF_dictionary[campaign+'_'+pointing][3])[0].data[0,:,:]
+    elif campaign == 'CV3':
         pointings = ['Q'+str(i) for i in range(17)]
-        for pointing in pointings:
-            sub = 'MIRM103-{}-SHORT'.format(pointing)
-            MIRIMPSF_dictionary[campaign+'_'+pointing] = [s for s in files if sub in s]
+        for point in pointings:
+            sub = 'MIRM103-{}-SHORT'.format(point)
+            MIRIMPSF_dictionary[campaign+'_'+point] = [s for s in files if sub in s]
+        if pointing == 'all':
+            return MIRIMPSF_dictionary
+        elif (pointing != 'all') & (output=='img'):
+            from astropy.io import fits
+            return fits.open(dataDir+MIRIMPSF_dictionary[campaign+'_'+pointing][1])[0].data[0,:,:],fits.open(dataDir+MIRIMPSF_dictionary[campaign+'_'+pointing][3])[0].data[0,:,:]
+        """
+        Dictionary keys are equivalent to PSF measurements in CV2 and CV3 tests (with different pointings).
+        Dictionary indeces within keys, for CV2 obs. are equivalent to:
+        [0,1,2,3] : SHORT_494,SHORT_495,SHORTB_494,SHORTB_495
+        [4,5,6,7] : MED_494,MED_495,MEDB_494,MEDB_495
+        [8,9,10,11] : LONG_494,LONG_495,LONGB_494,LONGB_495
 
-    """
-    Dictionary keys are equivalent to PSF measurements in CV2 and CV3 tests (with different pointings).
-    Dictionary indeces within keys, for CV2 obs. are equivalent to:
-    [0,1,2,3] : SHORT_494,SHORT_495,SHORTB_494,SHORTB_495
-    [4,5,6,7] : MED_494,MED_495,MEDB_494,MEDB_495
-    [8,9,10,11] : LONG_494,LONG_495,LONGB_494,LONGB_495
-
-    Dictionary indeces within keys, for CV3 obs. are equivalent to:
-    [0,1,2,3] : SHORT_494,SHORT_495,SHORTB_494,SHORTB_495
-    There are only SHORT CV3 PSF measurements
-    """
-
-    return MIRIMPSF_dictionary
+        Dictionary indeces within keys, for CV3 obs. are equivalent to:
+        [0,1,2,3] : SHORT_494,SHORT_495,SHORTB_494,SHORTB_495
+        There are only SHORT CV3 PSF measurements
+        """
+    elif campaign == 'CV1RR':
+        sci_imgs = {'P0':dataDir+'MIRM03639-P0-3296092823_1_495_SE_2013-10-23T09h57m38_LVL2.fits',
+                    'P1':dataDir+'MIRM03639-P1-3296094802_1_495_SE_2013-10-23T10h28m43_LVL2.fits',
+                    'P2':dataDir+'MIRM03639-P2-3296100758_1_495_SE_2013-10-23T11h00m44_LVL2.fits',
+                    'P3':dataDir+'MIRM03639-P3-3296103650_1_495_SE_2013-10-23T11h21m49_LVL2.fits',
+                    'P4':dataDir+'MIRM03639-P4-3296110642_1_495_SE_2013-10-23T11h44m59_LVL2.fits',
+                    'P5':dataDir+'MIRM03639-P5-3296112357_1_495_SE_2013-10-23T12h07m05_LVL2.fits',
+                    'P6':dataDir+'MIRM03639-P6-3296114131_1_495_SE_2013-10-23T12h07m21_LVL2.fits',
+                    'P7':dataDir+'MIRM03639-P7-3296115814_1_495_SE_2013-10-23T12h28m20_LVL2.fits',
+                    'P8':dataDir+'MIRM03639-P8-3296121530_1_495_SE_2013-10-23T12h49m36_LVL2.fits',
+                    'P9':dataDir+'MIRM03639-P9-3296123231_1_495_SE_2013-10-23T13h12m55_LVL2.fits',
+                    'P10':dataDir+'MIRM03639-P10-3296124946_1_495_SE_2013-10-23T13h13m07_LVL2.fits',
+                    'P11':dataDir+'MIRM03639-P11-3296130652_1_495_SE_2013-10-23T13h33m51_LVL2.fits',
+                    'P12':dataDir+'MIRM03639-P12-3296132334_1_495_SE_2013-10-23T13h54m37_LVL2.fits',
+                    'P13':dataDir+'MIRM03639-P13-3296134016_1_495_SE_2013-10-23T14h16m47_LVL2.fits',
+                    'P14':dataDir+'MIRM03639-P14-3296135712_1_495_SE_2013-10-23T14h39m58_LVL2.fits',
+                    'P15':dataDir+'MIRM03639-P15-3296141418_1_495_SE_2013-10-23T14h40m08_LVL2.fits',
+                    'P16':dataDir+'MIRM03639-P16-3296143123_1_495_SE_2013-10-23T15h17m44_LVL2.fits'}
+        if pointing == 'all':
+            return sci_imgs
+        elif (pointing != 'all') & (output=='img'):
+            from astropy.io import fits
+            return fits.open(sci_imgs[pointing])[0].data[0,:,:]
 
 #-- OTIS campaign
 def OTIS_ASPA_semiextended_source(lvl2path,band,pointing=None,output='img'):

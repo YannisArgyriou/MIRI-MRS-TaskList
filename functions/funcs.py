@@ -1,6 +1,4 @@
-"""Function file
-Author: Ioannis Argyriou (Institute of Astronomy, KU Leuven, ioannis.argyriou@kuleuven.be)
-"""
+"""Function file miricap401"""
 
 # import python modules
 import os
@@ -94,11 +92,10 @@ def mirimpsfs(workDir=None):
     return MIRIMPSF_dictionary
 
 #-corrections
-def OddEvenRowSignalCorrection(sci_img,det_dims=(1024,1032)):
-    copy_img = np.zeros(det_dims)
-    copy_img[0,:] = sci_img[0,:]
-    for i in range(det_dims[0]-2):
-        copy_img[i+1,:] = (((sci_img[i,:]+sci_img[i+2,:])/2.)+sci_img[i+1,:])/2.
+def OddEvenRowSignalCorrection(sci_img,nRows=1024):
+    copy_img = sci_img.copy()
+    for nRow in range(nRows-2):
+        copy_img[nRow+1,:] = (((sci_img[nRow,:]+sci_img[nRow+2,:])/2.)+sci_img[nRow+1,:])/2.
     return copy_img
 
 # straylight correction
@@ -359,7 +356,7 @@ def point_source_centroiding(sci_img,band,d2cMaps,spec_grid=None,fit='2D'):
 
         return sign_amp2D,alpha_centers2D,beta_centers2D,sigma_alpha2D,sigma_beta2D
 
-def point_source_along_slice_centroiding(sci_img,band,d2cMaps,spec_grid=None,offset_slice=0):
+def point_source_along_slice_centroiding(sci_img,band,d2cMaps,spec_grid=None,offset_slice=0,campaign=None,verbose=False):
     # same as "point_source_centroiding" function, however only performs 1D Gaussian fitting, in along-slice (alpha) direction
     # param. "offset slice" allows to perform the centroiding analysis in a neighboring slice
     import mrs_aux as maux
@@ -382,7 +379,8 @@ def point_source_along_slice_centroiding(sci_img,band,d2cMaps,spec_grid=None,off
     source_center_slice = np.argmax(sum_signals)+1
     source_center_slice+=offset_slice
 
-    print 'Slice {} has the largest summed flux'.format(source_center_slice)
+    if verbose==True:
+        print 'Slice {} has the largest summed flux'.format(source_center_slice)
 
     # along-slice center:
     det_dims = (1024,1032)
@@ -393,6 +391,8 @@ def point_source_along_slice_centroiding(sci_img,band,d2cMaps,spec_grid=None,off
     first_nonzero_row = 0
     while all(img[first_nonzero_row,:][~np.isnan(img[first_nonzero_row,:])] == 0.): first_nonzero_row+=1
     source_center_alpha = alphaMap[first_nonzero_row,img[first_nonzero_row,:].argmax()]
+    if campaign=='CV1RR':
+        source_center_alpha = alphaMap[np.where(img[~np.isnan(img)].max() == img)]
 
     # Fit Gaussian distribution to along-slice signal profile
     sign_amps,alpha_centers,alpha_sigmas,bkg_amps = [np.full((len(lambcens)),np.nan) for j in range(4)]
@@ -411,6 +411,10 @@ def point_source_along_slice_centroiding(sci_img,band,d2cMaps,spec_grid=None,off
     for i in xrange(len(np.diff(sign_amps))):
         if np.abs(np.diff(alpha_centers)[i]) > 0.05:
             sign_amps[i],sign_amps[i+1],alpha_centers[i],alpha_centers[i+1],alpha_sigmas[i],alpha_sigmas[i+1],bkg_amps[i],bkg_amps[i+1] = [np.nan for j in range(8)]
+    if campaign == 'CV1RR':
+        for i in xrange(len(np.diff(sign_amps))):
+            if np.abs(np.diff(sign_amps)[i]) > 10.:
+                sign_amps[i],sign_amps[i+1],alpha_centers[i],alpha_centers[i+1],alpha_sigmas[i],alpha_sigmas[i+1],bkg_amps[i],bkg_amps[i+1] = [np.nan for j in range(8)]
 
     return source_center_slice,sign_amps,alpha_centers,alpha_sigmas,bkg_amps
 
@@ -984,11 +988,13 @@ def plot_etalon_fit(fitparams,fitting_flag):
         plt.plot(plotx,ploty,'r')
 
 # normalize fringes
-def norm_fringe(sci_data,thres=None,min_dist=None,k=3,ext=3):
+def norm_fringe(sci_data,thres=0,min_dist=2,k=3,ext=3):
     # determine peaks
     sci_data_noNaN = sci_data.copy()
     sci_data_noNaN[np.isnan(sci_data_noNaN)] = 0.
     peaks = find_peaks(sci_data_noNaN,thres=thres,min_dist=min_dist)
+    if peaks[0] == np.nonzero(sci_data_noNaN)[0][0]:
+        peaks = np.delete(peaks,0)
     # determine fringe continuum
     arr_interpolator = scp_interpolate.InterpolatedUnivariateSpline(peaks,sci_data_noNaN[peaks],k=k,ext=ext)
     sci_data_profile = arr_interpolator(range(len(sci_data_noNaN)))
@@ -1179,14 +1185,17 @@ def detpixel_trace(band,d2cMaps,sliceID=None,alpha_pos=None):
     # find pixel trace
     for row in ypos:
         if band[0] in ['1','4']:
-            xpos[row] = np.argmin(alpha_img[row,:])+find_nearest(alpha_img[row,:][(slice_img[row,:]!=0)],alpha_pos)
+            try:xpos[row] = np.argmin(alpha_img[row,:])+find_nearest(alpha_img[row,:][(slice_img[row,:]!=0)],alpha_pos)
+            except ValueError:
+                """Band 1C has missing pixel values (zeros instead of valid values)"""
+                continue
         elif band[0] in ['2','3']:
             xpos[row] = np.argmax(alpha_img[row,:])+find_nearest(alpha_img[row,:][(slice_img[row,:]!=0)],alpha_pos)
     xpos = xpos.astype(int)
 
     return ypos,xpos
 
-def detpixel_trace_compactsource(sci_img,band,d2cMaps,offset_slice=0):
+def detpixel_trace_compactsource(sci_img,band,d2cMaps,offset_slice=0,verbose=False):
     # detector dimensions
     det_dims  = (1024,1032)
     nslices   = d2cMaps['nslices']
@@ -1197,7 +1206,8 @@ def detpixel_trace_compactsource(sci_img,band,d2cMaps,offset_slice=0):
     for islice in xrange(1+nslices):
         sum_signals[islice-1] = sci_img[(sliceMap == 100*int(band[0])+islice) & (~np.isnan(sci_img))].sum()
     source_center_slice = np.argmax(sum_signals)+1
-    print 'Source center slice ID: {}'.format(source_center_slice)
+    if verbose==True:
+        print 'Source center slice ID: {}'.format(source_center_slice)
 
     signal_img = np.full(det_dims,0.)
     sel_pix = (sliceMap == 100*int(band[0])+source_center_slice+offset_slice)
